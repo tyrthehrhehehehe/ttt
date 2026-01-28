@@ -43,6 +43,17 @@ end
 Pirates = function()
     replicated.Remotes.CommF_:InvokeServer("SetTeam", "Pirates")
 end
+
+local AllBoats = {
+    "Beast Hunter",
+    "Lantern",
+    "Guardian",
+    "Grand Brigade",
+    "Dinghy",
+    "Sloop",
+    "The Sentinel"
+}
+
 EquipWeapon = function(text)
     if not text then
         return
@@ -487,11 +498,127 @@ CheckLeviathan = function()
     end;
     return false
 end;
+local block = Instance.new("Part", workspace)
+block.Size = Vector3.new(1, 1, 1)
+block.Name = "Rip_Indra"
+block.Anchored = true
+block.CanCollide = false
+block.CanTouch = false
+block.Transparency = 1
+local blockfind = workspace:FindFirstChild(block.Name)
+if blockfind and blockfind ~= block then
+    blockfind:Destroy()
+end
+task.spawn(function()
+    while task.wait() do
+        if block and block.Parent == workspace then
+            if shouldTween then
+                getgenv().OnFarm = true
+            else
+                getgenv().OnFarm = false
+            end
+        else
+            getgenv().OnFarm = false
+        end
+    end
+end)
+task.spawn(function()
+    local a = game.Players.LocalPlayer;
+    repeat
+        task.wait()
+    until a.Character and a.Character.PrimaryPart;
+    block.CFrame = a.Character.PrimaryPart.CFrame;
+    while task.wait() do
+        pcall(function()
+            if getgenv().OnFarm then
+                if block and block.Parent == workspace then
+                    local b = a.Character and a.Character.PrimaryPart;
+                    if b and (b.Position - block.Position).Magnitude <= 200 then
+                        b.CFrame = block.CFrame
+                    else
+                        block.CFrame = b.CFrame
+                    end
+                end;
+                local c = a.Character;
+                if c then
+                    for d, e in pairs(c:GetChildren()) do
+                        if e:IsA("BasePart") then
+                            e.CanCollide = false
+                        end
+                    end
+                end
+            else
+                local c = a.Character;
+                if c then
+                    for d, e in pairs(c:GetChildren()) do
+                        if e:IsA("BasePart") then
+                            e.CanCollide = true
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+_tp = function(target)
+    local character = plr.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then
+        return
+    end
+    local rootPart = character.HumanoidRootPart
+    local distance = (target.Position - rootPart.Position).Magnitude
+    local tweenInfo = TweenInfo.new(distance / 300, Enum.EasingStyle.Linear)
+    local tween = game:GetService("TweenService"):Create(block, tweenInfo, {
+        CFrame = target
+    })
+    if plr.Character.Humanoid.Sit == true then
+        block.CFrame = CFrame.new(block.Position.X, target.Y, block.Position.Z)
+    end
+    tween:Play()
+    task.spawn(function()
+        while tween.PlaybackState == Enum.PlaybackState.Playing do
+            if not shouldTween then
+                tween:Cancel()
+                break
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+TeleportToTarget = function(targetCFrame)
+    if (targetCFrame.Position - plr.Character.HumanoidRootPart.Position).Magnitude > 1000 then
+        _tp(targetCFrame)
+    else
+        _tp(targetCFrame)
+    end
+end
+notween = function(p)
+    plr.Character.HumanoidRootPart.CFrame = p
+end
+function BTP(p)
+    local player = game.Players.LocalPlayer
+    local humanoidRootPart = player.Character.HumanoidRootPart
+    local humanoid = player.Character.Humanoid
+    local playerGui = player.PlayerGui.Main
+    local targetPosition = p.Position
+    local lastPosition = humanoidRootPart.Position
+    repeat
+        humanoid.Health = 0
+        humanoidRootPart.CFrame = p
+        playerGui.Quest.Visible = false
+        if (humanoidRootPart.Position - lastPosition).Magnitude > 1 then
+            lastPosition = humanoidRootPart.Position
+            humanoidRootPart.CFrame = p
+        end
+        task.wait(0.5)
+    until (p.Position - humanoidRootPart.Position).Magnitude <= 2000
+end
 
 spawn(function()
     while task.wait() do
         pcall(function()
             if _G.SailBoat_Hydra or _G.WardenBoss or _G.AutoFactory or _G.HighestMirage or _G.HCM or _G.PGB or _G.Leviathan1 or _G.UPGDrago or _G.Complete_Trials or _G.TpDrago_Prehis or _G.BuyDrago or _G.AutoFireFlowers or _G.DT_Uzoth or _G.AutoBerry or _G.Prehis_Find or _G.Prehis_Skills or _G.Prehis_DB or _G.Prehis_DE or _G.FarmBlazeEM or _G.Dojoo or _G.CollectPresent or _G.AutoLawKak or _G.TpLab or _G.AutoPhoenixF or _G.AutoFarmChest or _G.AutoHytHallow or _G.LongsWord or _G.BlackSpikey or _G.AutoHolyTorch or _G.TrainDrago or _G.AutoSaber or _G.FarmMastery_Dev or _G.CitizenQuest or _G.AutoEctoplasm or _G.KeysRen or _G.Auto_Rainbow_Haki or _G.obsFarm or _G.AutoBigmom or _G.Doughv2 or _G.AuraBoss or _G.Raiding or _G.Auto_Cavender or _G.TpPly or _G.Bartilo_Quest or _G.Level or _G.FarmEliteHunt or _G.AutoZou or _G.AutoFarm_Bone or getgenv().AutoMaterial or _G.CraftVM or _G.FrozenTP or _G.TPDoor or _G.AcientOne or _G.AutoFarmNear or _G.AutoRaidCastle or _G.DarkBladev3 or _G.AutoFarmRaid or _G.Auto_Cake_Prince or _G.Addealer or _G.TPNpc or _G.TwinHook or _G.FindMirage or _G.FarmChestM or _G.Shark or _G.TerrorShark or _G.Piranha or _G.MobCrew or _G.SeaBeast1 or _G.FishBoat or _G.AutoPole or _G.AutoPoleV2 or _G.Auto_SuperHuman or _G.AutoDeathStep or _G.Auto_SharkMan_Karate or _G.Auto_Electric_Claw or _G.AutoDragonTalon or _G.Auto_Def_DarkCoat or _G.Auto_God_Human or _G.Auto_Tushita or _G.AutoMatSoul or _G.AutoKenVTWO or _G.AutoSerpentBow or _G.AutoFMon or _G.Auto_Soul_Guitar or _G.TPGEAR or _G.AutoSaw or _G.AutoTridentW2 or _G.Auto_StartRaid or _G.AutoEvoRace or _G.AutoGetQuestBounty or _G.MarinesCoat or _G.TravelDres or _G.Defeating or _G.DummyMan or _G.Auto_Yama or _G.Auto_SwanGG or _G.SwanCoat or _G.AutoEcBoss or _G.Auto_Mink or _G.Auto_Human or _G.Auto_Skypiea or _G.Auto_Fish or _G.CDK_TS or _G.CDK_YM or _G.CDK or _G.AutoFarmGodChalice or _G.AutoFistDarkness or _G.AutoMiror or _G.Teleport or _G.AutoKilo or _G.AutoGetUsoap or _G.Praying or _G.TryLucky or _G.AutoColShad or _G.AutoUnHaki or _G.Auto_DonAcces or _G.AutoRipIngay or _G.DragoV3 or _G.DragoV1 or _G.SailBoats or NextIs or _G.FarmGodChalice or _G.IceBossRen or senth or senth2 or _G.Lvthan or _G.beasthunter or _G.DangerLV or _G.Relic123 or _G.tweenKitsune or _G.Collect_Ember or _G.AutofindKitIs or _G.snaguine or _G.TwFruits or _G.tweenKitShrine or _G.Tp_LgS or _G.Tp_MasterA or _G.tweenShrine or _G.FarmMastery_G or _G.FarmMastery_S then
+
                 shouldTween = true
                 if not plr.Character.HumanoidRootPart:FindFirstChild("BodyClip") then
                     local Noclip = Instance.new("BodyVelocity")
@@ -531,8 +658,8 @@ end)
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Mascara Cat Hub [ Premium ]",
-    SubTitle = "Buy orenzoiun",
+    Title = "catt farming ",
+    SubTitle = "by idk",
     TabWidth = 180,
     Size = UDim2.fromOffset(560, 370),
     Acrylic = false,
